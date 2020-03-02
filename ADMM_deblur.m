@@ -5,9 +5,9 @@ I = rgb2gray(im2double(imread(img_path)));
 I = I(1:300, 1:500);
 
 % blur kernel
-c_size = 25;
+c_size = 50;
 c = zeros(c_size);
-c(ceil(c_size/2),:) = 3/c_size;
+c(ceil(c_size)/2:end,ceil(c_size/2)) = 3/c_size;
 
 % functions converting a point spread function (convolution kernel) to the
 % corresponding optical transfer function (Fouier multiplier)
