@@ -4,7 +4,7 @@ I = rgb2gray(im2double(imread(img_path)));
 
 I = I(1:300, 1:500);
 
-blur_I = Atfun(I);
+blur_I = Afun(I);
 
 subplot(1,3,1)
 imshow(I)

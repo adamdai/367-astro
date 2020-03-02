@@ -32,7 +32,7 @@ b = Ib;
 % ADMM
 [H,W] = size(I);
 iterations = 100;
-lamda = 0.001;
+lamda = 0.1;
 rho = 10;
 kappa = lamda/rho;
 
@@ -58,3 +58,8 @@ end
 
 subplot(1,3,3)
 imshow(x)
+
+% find PSNR
+MSE = 1/(size(I,1)*size(I,2)*3)*(sum((I-x).^2,'all'));
+PSNR = 10*log10(max(I,[],'all')^2/MSE);
+fprintf('ADMM with sparisity prior PSNR = %f \n',PSNR); 
