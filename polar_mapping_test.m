@@ -3,10 +3,10 @@ clear, close all
 % Get sample image
 img_path = 'stock_photos/stock_01.jpg';
 I = rgb2gray(im2double(imread(img_path)));
-I = I(1:500, 1:500);
+I = I(1:2000, 1:2000);
 
 % Generate rotationally blurred image
-rot_center = [250,400];
+rot_center = [250,100];
 [I_pad, pad_widths] = pad_farthest_corner(I, rot_center);
 blur_th = 15;
 I_blurred = rotate_blur_image(I_pad, blur_th);

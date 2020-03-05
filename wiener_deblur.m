@@ -2,7 +2,7 @@ clear, close all
 img_path = 'stock_photos/stock_01.jpg';
 I = rgb2gray(im2double(imread(img_path)));
 
-I = I(1:300, 1:500);
+I = I(1:500, 1:500);
 
 % blur kernel
 c_size = 25;
@@ -16,6 +16,8 @@ p2o = @(x) psf2otf(x, size(I));
 % precompute OTFs
 cFT     = p2o(c);
 cTFT    = conj(p2o(c));
+
+cFT = cFT + 0.001;
 
 % blur image with kernel
 Ib = ifft2(fft2(I).*cFT);

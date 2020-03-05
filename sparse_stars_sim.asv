@@ -1,9 +1,0 @@
-imgres = [4000 6000];
-img = zeros(imgres);
-%imshow(img);
-
-% uniform random distribution
-% star = 1 pixel
-p=0.001;
-A=(rand(imgres)<p);
-imshow(A)
