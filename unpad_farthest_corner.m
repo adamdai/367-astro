@@ -4,5 +4,5 @@ function [I] = unpad_farthest_corner(I, pad_widths)
     R = pad_widths(2);
     T = pad_widths(3);
     B = pad_widths(4);
-    I = I(T:end-B,L:end-R);
+    I = I(T:end-B,L:end-R,:);
 end
