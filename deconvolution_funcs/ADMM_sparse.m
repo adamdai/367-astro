@@ -1,28 +1,22 @@
-function [x] = ADMM_TV(b, c_size, lambda, rho, iterations)
-    % blur kernel
-    c = zeros(c_size);
-    c(ceil(c_size/2):end,ceil(c_size/2)) = 1/c_size;
+function [I_deconv] = ADMM_sparse(I, psf, lambda, rho, iterations)
 
     % functions converting a point spread function (convolution kernel) to the
     % corresponding optical transfer function (Fourier multiplier)
-    p2o = @(x) psf2otf(x, size(b));
+    p2o = @(x) psf2otf(x, size(I));
 
     % precompute OTFs
-    cFT     = p2o(c);
-    cTFT    = conj(p2o(c));
+    cFT     = p2o(psf);
+    cTFT    = conj(p2o(psf));
     
     % ADMM
-    [H,W] = size(b);
-%     iterations = 100;
-%     lamda = 0.001;
-%     rho = 10;
+    [H,W] = size(I);
     kappa = lambda/rho;
 
-    x = zeros(H, W);
+    I_deconv = zeros(H, W);
     z = zeros(H, W);
     u = zeros(H, W);
 
-    bFT = fft2(b);
+    bFT = fft2(I);
     denom = cTFT.*cFT + rho;
 
     for iters = 1:iterations
@@ -30,12 +24,12 @@ function [x] = ADMM_TV(b, c_size, lambda, rho, iterations)
         v = z - u;
         vFT = fft2(v);
         num = cTFT.*bFT + rho*vFT;
-        x = real(ifft2(num./denom));
+        I_deconv = real(ifft2(num./denom));
         % z update
-        w = x + u;
+        w = I_deconv + u;
         z = max(w-kappa,0) - max(-w-kappa,0);
         % u update
-        u = u + x - z;
+        u = u + I_deconv - z;
     end
 end
 

@@ -1,13 +1,11 @@
-function [I_deconv] = ADMM_deconv_sparse_prior(I, psf, max_iters)
+function [I_deconv] = ADMM_sparse_color(I, psf, lambda, rho, iterations)
     [H,W,C] = size(I);
     cFT = psf2otf(psf, [H,W]);
     cTFT = conj(cFT);
     
     I_deconv = zeros(size(I));
 
-    lamda = 0.001;
-    rho = 10;
-    kappa = lamda/rho;
+    kappa = lambda/rho;
     
     for c = 1:C
         x = zeros(H, W);
@@ -17,7 +15,7 @@ function [I_deconv] = ADMM_deconv_sparse_prior(I, psf, max_iters)
         bFT = fft2(I(:,:,c));
         denom = cTFT.*cFT + rho;
 
-        for iters = 1:max_iters
+        for iters = 1:iterations
             % x update
             v = z - u;
             vFT = fft2(v);
