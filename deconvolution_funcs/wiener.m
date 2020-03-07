@@ -8,4 +8,4 @@ otf(otf==0) = eps;
 
 % Wiener
 SNR = mean(b,'all')/sigma;
-x = ifft2((abs(otf).^2./(abs(otf).^2+1/SNR)).*(fft2(b)./otf));
+x = real(ifft2((abs(otf).^2./(abs(otf).^2+1/SNR)).*(fft2(b)./otf)));

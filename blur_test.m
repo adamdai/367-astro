@@ -2,9 +2,9 @@ clear, close all
 addpath('./deconvolution_funcs');
 
 % Get sample image
-img_path = 'stock_photos/stock_01.jpg';
+img_path = 'stock_photos/stock_02.jpg';
 % I = rgb2gray(im2double(imread(img_path)));
-% I = I(1:500, 1:500);
+% I = I(1:500, 1:500,:);
 I = im2double(imread(img_path));
 I = I(1:400, 1:500, :);
 
@@ -29,8 +29,9 @@ cFT     = p2o(psf);
 Ib = ifft2(fft2(I).*cFT);
 
 % Deconvolution 
-I_deconv = RL_TV_color(Ib, psf, 0.01, 100);
-%I_deconv = ADMM_TV_color(Ib, psf, 0.01, 10, 100);
+I_deconv = wiener(Ib, psf, 0.001);
+%I_deconv = RL_color(Ib, psf, 100);
+%I_deconv = ADMM_sparse_color(Ib, psf, 0.01, 10, 100);
 
 subplot(1,2,1)
 imshow(I)

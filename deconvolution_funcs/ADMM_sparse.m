@@ -1,35 +1,32 @@
-function [I_deconv] = ADMM_sparse(I, psf, lambda, rho, iterations)
-
-    % functions converting a point spread function (convolution kernel) to the
-    % corresponding optical transfer function (Fourier multiplier)
-    p2o = @(x) psf2otf(x, size(I));
-
-    % precompute OTFs
-    cFT     = p2o(psf);
-    cTFT    = conj(p2o(psf));
+function [I_deconv] = ADMM_sparse_color(I, psf, lambda, rho, iterations)
+    [H,W,C] = size(I);
+    cFT = psf2otf(psf, [H,W]);
+    cTFT = conj(cFT);
     
-    % ADMM
-    [H,W] = size(I);
+    I_deconv = zeros(size(I));
+
     kappa = lambda/rho;
+    
+    for c = 1:C
+        x = zeros(H, W);
+        z = zeros(H, W);
+        u = zeros(H, W);
 
-    I_deconv = zeros(H, W);
-    z = zeros(H, W);
-    u = zeros(H, W);
+        bFT = fft2(I(:,:,c));
+        denom = cTFT.*cFT + rho;
 
-    bFT = fft2(I);
-    denom = cTFT.*cFT + rho;
-
-    for iters = 1:iterations
-        % x update
-        v = z - u;
-        vFT = fft2(v);
-        num = cTFT.*bFT + rho*vFT;
-        I_deconv = real(ifft2(num./denom));
-        % z update
-        w = I_deconv + u;
-        z = max(w-kappa,0) - max(-w-kappa,0);
-        % u update
-        u = u + I_deconv - z;
+        for iters = 1:iterations
+            % x update
+            v = z - u;
+            vFT = fft2(v);
+            num = cTFT.*bFT + rho*vFT;
+            x = real(ifft2(num./denom));
+            % z update
+            w = x + u;
+            z = max(w-kappa,0) - max(-w-kappa,0);
+            % u update
+            u = u + x - z;
+        end
+        I_deconv(:,:,c) = x;
     end
 end
-

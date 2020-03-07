@@ -1,10 +1,12 @@
 clear
 addpath('./deconvolution_funcs');
+addpath('./utility');
 
 % Get sample image
-img_path = 'stock_photos/stock_01.jpg';
+img_path = 'stock_photos/stock_02.jpg';
 I = im2double(imread(img_path));
-I = I(1:500, 1:500, :);
+%I = I(1000:3000, 2000:4000, :);
+I = I(1:100, 1:100, :);
 
 % Generate rotationally blurred image
 rot_center = [ceil(size(I,1)/2),ceil(size(I,2)/2)];
@@ -21,10 +23,10 @@ psf(1:blur_len,blur_len) = 1;
 
 % Deconvolution 
 %I_deconv_polar = wiener(I_blurred_polar, psf, 0.001);
-%I_deconv_polar = ADMM_sparse_color(I_blurred_polar, psf, 10, 10, 50);
-%I_deconv_polar = ADMM_TV_color(I_blurred_polar, psf, 1, 10, 50);
-%I_deconv_polar = RL_color(I_blurred_polar, psf, 25);
-I_deconv_polar = RL_TV_color(I_blurred_polar, psf, 0.01, 100);
+%I_deconv_polar = ADMM_sparse(I_blurred_polar, psf, 10, 10, 50);
+%I_deconv_polar = ADMM_TV(I_blurred_polar, psf, 1, 10, 50);
+%I_deconv_polar = RL(I_blurred_polar, psf, 25);
+I_deconv_polar = RL_TV(I_blurred_polar, psf, 0.01, 100);
 I_deconv_cart = map_to_cartesian(I_deconv_polar, size(I_blurred,2), size(I_blurred,1));
 I_deconv = unpad_farthest_corner(I_deconv_cart, pad_widths);
 
@@ -36,7 +38,7 @@ subplot(1,2,2)
 imshow(normalize_01(I_deconv));
 title('Reconstructed image')
 
-fprintf('PSNR = %f \n',psnr(I,I_deconv)); 
+fprintf('PSNR = %f \n',psnr(I,normalize_01(I_deconv))); 
 % subplot(1,6,3)
 % imshow(normalize_01(I_blurred_polar))
 % title('Polar transform of blurred')
