@@ -1,7 +1,11 @@
 clear, close all
-img_path = 'stock_photos/star_trail_test.jpg';
+addpath('./utility');
+%img_path = 'stock_photos/star_trail_test.jpg';
+img_path = 'stock_photos/star_trail_3.jpg';
 I = rgb2gray(im2double(imread(img_path)));
 %I = im2double(imread(img_path));
+%I = I(1:276, 150:415, :);% centered
+%I = I(1750:2500, 1500:2250, :);% centered
 
 [H,W] = size(I);
 
@@ -11,6 +15,22 @@ tol = 200;
 c = [100, 200];
 r = 50;
 circle = ((rows - c(2)).^2 + (cols - c(1)).^2 <= r.^2+tol) & ((rows - c(2)).^2 + (cols - c(1)).^2 >= r.^2-tol);
+
+
+binaryImage = I > 255;
+[rows, columns] = find(binaryImage);
+[xc,yc,R,a] = circfit(
+
+% [c,r] = imfindcircles(I,[100,4000]);
+% imshow(I);viscircles(c,r);
+
+% figure();
+% imshow(I);
+% 
+% rot_center = [ceil(size(I,1)/2),ceil(size(I,2)/2)];
+% I_blurred_polar = map_to_polar(I, size(I,2), size(I,1));
+% figure();
+% imshow(I_blurred_polar);
 
 % cvx_begin
 %     variable c(2)
@@ -22,14 +42,3 @@ circle = ((rows - c(2)).^2 + (cols - c(1)).^2 <= r.^2+tol) & ((rows - c(2)).^2 +
 %         0 <= c(1) <= H;
 %         0 <= c(2) <= W;
 % cvx_end
-
-r = 100;
-max = 0;
-c = [1,1];
-for cy=1:H
-    for cx=1:W
-        circle = ((rows - cy).^2 + (cols - cx).^2 <= r.^2+tol) & ((rows - cy).^2 + (cols - cx).^2 >= r.^2-tol);
-        if (sum(I.*circle,'all') > max)
-            max = sum(I.*circle,'all');
-            c = [cx,cy];
-        end

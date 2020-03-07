@@ -1,8 +1,11 @@
 clear, close all
+addpath('./deconvolution_funcs');
+addpath('./utility');
+
 img_path = 'stock_photos/star_trail_test.jpg';
 I = rgb2gray(im2double(imread(img_path)));
 [H, W] = size(I);
-rot_center = [130, 285];
+rot_center = [133, 277];
 [I_blurred, pad_widths] = pad_farthest_corner(I, rot_center);
 
 
@@ -15,6 +18,13 @@ psf = zeros(blur_len*2-1, blur_len*2-1);
 psf(1:blur_len,blur_len) = 1;
 
 max_iters = 100;   
-I_deconv_polar = RL_deconv(I_blurred_polar, psf, max_iters);
+I_deconv_polar = RL(I_blurred_polar, psf, max_iters);
 I_deconv_cart = map_to_cartesian(I_deconv_polar, size(I_blurred,2), size(I_blurred,1));
 I_deconv = unpad_farthest_corner(I_deconv_cart, pad_widths);
+
+subplot(1,2,1)
+imshow(I)
+title('Original')
+subplot(1,2,2)
+imshow(normalize_01(I_deconv));
+title('Reconstructed image')
