@@ -11,8 +11,8 @@ I = I(1500:2000, 3000:3500, :);
 %%%%%%%%%%%%% PARAMETERS %%%%%%%%%%%%%%
 blur_th = 15;
 rot_center = [ceil(H/2),ceil(W/2)];
-deconv_method = 'ADMM';
-prior = 'sparse';
+deconv_method = 'RL';
+prior = 'none';
 deconv_iters = 25;
 lambda = 1;
 rho = 10;
@@ -35,22 +35,25 @@ psf = zeros(blur_len*2-1, blur_len*2-1);
 psf(1:blur_len,blur_len) = 1;
 
 % Deconvolution
-if deconv_method == 'ADMM'
-    if prior == 'sparse'
-        x_polar = ADMM_sparse(b_polar, psf, lambda, rho, deconv_iters);
-    elseif prior == 'tv'
-        x_polar = ADMM_TV(b_polar, psf, lambda, rho, deconv_iters);
+switch deconv_method
+    case 'ADMM'
+        switch prior
+            case 'sparse'
+                x_polar = ADMM_sparse(b_polar, psf, lambda, rho, deconv_iters);
+            case 'tv'
+                x_polar = ADMM_TV(b_polar, psf, lambda, rho, deconv_iters);
+        end
+    case 'RL'
+    switch prior
+        case 'none'
+            x_polar = RL(b_polar, psf, deconv_iters);
+        case 'sparse'
+            x_polar = RL_sparse(b_polar, psf, lambda, deconv_iters);
+        case 'tv'
+            x_polar = RL_TV(b_polar, psf, lambda, deconv_iters);
     end
-elseif deconv_method == 'RL'
-    if prior == 'none'
-        x_polar = RL(b_polar, psf, deconv_iters);
-    elseif prior == 'sparse'
-        x_polar = RL_sparse(b_polar, psf, lambda, deconv_iters);
-    elseif prior == 'tv'
-        x_polar = RL_TV(b_polar, psf, lambda, deconv_iters);
-    end
-elseif deconv_method == 'wiener'
-    x_polar = wiener(b_polar, psf, sigma_noise_wiener);
+    case 'wiener'
+        x_polar = wiener(b_polar, psf, sigma_noise_wiener);
 end
 
 % Mapping back to cartesian space
