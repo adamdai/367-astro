@@ -1,7 +1,7 @@
-function [I_cart] = map_to_cartesian(I_polar, n_h, n_w)
+function [I_cart] = map_to_cartesian(I_polar)
     [size_Th, size_R, C] = size(I_polar);
-    y_vals = linspace(-size_R, size_R, n_h);
-    x_vals = linspace(-size_R, size_R, n_w);
+    y_vals = linspace(-size_R, size_R, size_R);
+    x_vals = linspace(-size_R, size_R, size_Th);
     [X,Y] = meshgrid(y_vals, x_vals);
     [Th, R] = cart2pol(X, Y);
     Th = wrapTo2Pi(Th);
