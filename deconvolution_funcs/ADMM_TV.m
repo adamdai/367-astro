@@ -1,4 +1,4 @@
-function [I_deconv] = ADMM_TV_color(I, psf, lambda, rho, iterations)
+function [I_deconv] = ADMM_TV(I, psf, lambda, rho, iterations)
     
     % convolution kernel for Dx and Dy
     dy = [0 0 0; 0 -1 0; 0 1 0];

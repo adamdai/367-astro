@@ -1,4 +1,4 @@
-function [I_deconv] = ADMM_sparse_color(I, psf, lambda, rho, iterations)
+function [I_deconv] = ADMM_sparse(I, psf, lambda, rho, iterations)
     [H,W,C] = size(I);
     cFT = psf2otf(psf, [H,W]);
     cTFT = conj(cFT);

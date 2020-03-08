@@ -1,4 +1,4 @@
-function [I_deconv] = RL_sparse_color(I, psf, max_iters)
+function [I_deconv] = RL_sparse(I, psf, max_iters)
     eps = 1e-8;
     I(I<=0) = eps;
     [H,W,C] = size(I);

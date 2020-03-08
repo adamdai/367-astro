@@ -1,4 +1,4 @@
-function [I_deconv] = RL_TV_color(I, psf, lambda, max_iters)
+function [I_deconv] = RL_TV(I, psf, lambda, max_iters)
     eps = 1e-8;
     I(I<=0) = eps;
     imageSize = [size(I,1) size(I,2)];
