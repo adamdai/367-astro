@@ -1,13 +1,13 @@
 function [I_polar] = map_to_polar(I)
 % Assumes center of rotation is at image center
     [H,W,C] = size(I);
-    radius_vals = linspace(0, max(H,W)/sqrt(2), W);
-    angle_vals = linspace(0, 2*pi, H);
+    radius_vals = linspace(0, max(H,W)/sqrt(2), ceil(max(H,W)/sqrt(2)));
+    angle_vals = linspace(0, 2*pi, 2*W+2*H); % samples a theta for each pixel on perimeter
     [R, Th] = meshgrid(radius_vals, angle_vals);
     [X,Y] = pol2cart(Th, R);
     X = X + W/2;
     Y = Y + H/2;
-    I_polar = zeros(size(I));
+    I_polar = zeros(2*W+2*H, ceil(max(H,W)/sqrt(2)));
     for c = 1:C
         I_polar(:,:,c) = interp2(I(:,:,c), X, Y);
     end

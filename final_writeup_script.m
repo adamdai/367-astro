@@ -11,13 +11,13 @@ I = I(1500:2000, 3000:3500, :);
 %%%%%%%%%%%%% PARAMETERS %%%%%%%%%%%%%%
 blur_th = 15;
 rot_center = [ceil(H/2),ceil(W/2)];
-deconv_method = 'RL';
-prior = 'none';
+deconv_method = 'ADMM';
+prior = 'tv';
 deconv_iters = 25;
 lambda = 1;
 rho = 10;
 sigma_noise_wiener = 0.5;
-brightness_scale = 1.5;
+brightness_scale = 1;
 sigma_spatial_bilateral = 0.5;
 sigma_intensity_bilateral = 0.1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,6 +25,7 @@ sigma_intensity_bilateral = 0.1;
 
 % Generate rotationally blurred image
 [I_pad, pad_widths] = pad_farthest_corner(I, rot_center);
+[H_pad, W_pad, C_pad] = size(I_pad);
 b = rotate_blur_image(I_pad, blur_th);
 b_polar = map_to_polar(b);
 
@@ -57,7 +58,7 @@ switch deconv_method
 end
 
 % Mapping back to cartesian space
-x_cart = map_to_cartesian(x_polar);
+x_cart = map_to_cartesian(x_polar, H_pad, W_pad);
 x = crop_artifact_portions(x_cart, pad_widths);
 x = normalize_01(x)*brightness_scale;
 
