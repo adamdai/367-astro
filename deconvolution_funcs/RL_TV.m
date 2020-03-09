@@ -16,6 +16,7 @@ function [I_deconv] = RL_TV(I, psf, lambda, max_iters)
         x = rand(imageSize);
         At_1 = Atfun(ones(imageSize));
         for i = 1:max_iters
+            disp(['Iteration ',num2str(i+(c-1)*max_iters),' of ',num2str(C*max_iters)]);
             d = I(:,:,c)./Afun(x);
             d(isnan(d))=0;
             D = opDx(x);

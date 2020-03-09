@@ -32,6 +32,7 @@ function [I_deconv] = ADMM_TV(I, psf, lambda, rho, iterations)
         bFT = fft2(I(:,:,c));
         
         for iters = 1:iterations
+            disp(['Iteration ',num2str(iters+(c-1)*iterations),' of ',num2str(C*iterations)]);
             % x update
             v = z - u;
             v1FT = fft2(v(:,:,1));

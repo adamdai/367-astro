@@ -4,7 +4,7 @@ addpath('./utility');
 
 imgpath = './stock_photos/stock_02.jpg';
 I = im2double(imread(imgpath));
-I = I(1500:2000, 3000:3500, :);
+I = I(1:2000, 1:2000, :);
 [H, W, C] = size(I);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -12,14 +12,17 @@ I = I(1500:2000, 3000:3500, :);
 blur_th = 15;
 rot_center = [ceil(H/2),ceil(W/2)];
 deconv_method = 'ADMM';
-prior = 'tv';
-deconv_iters = 25;
+prior = 'sparse';
+deconv_iters = 5;
 lambda = 1;
 rho = 10;
 sigma_noise_wiener = 0.5;
-brightness_scale = 1;
+brightness_scale = 1.5;
+contrast_scale = 2.5;
 sigma_spatial_bilateral = 0.5;
 sigma_intensity_bilateral = 0.1;
+noise_thresh = 0.2;
+max_lum = 100;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -27,6 +30,7 @@ sigma_intensity_bilateral = 0.1;
 [I_pad, pad_widths] = pad_farthest_corner(I, rot_center);
 [H_pad, W_pad, C_pad] = size(I_pad);
 b = rotate_blur_image(I_pad, blur_th);
+b(b<noise_thresh) = 0;
 b_polar = map_to_polar(b);
 
 % Generate blur PSF
@@ -58,16 +62,22 @@ switch deconv_method
 end
 
 % Mapping back to cartesian space
-x_cart = map_to_cartesian(x_polar, H_pad, W_pad);
-x = crop_artifact_portions(x_cart, pad_widths);
-x = normalize_01(x)*brightness_scale;
+x = map_to_cartesian(x_polar, H_pad, W_pad);
+x = crop_artifact_portions(x, pad_widths);
+x = (normalize_01(x)*brightness_scale).^(contrast_scale);
+
+%x(x < noise_thresh) = 0;
 
 % Bilateral filtering deconvolution artifacts
-average_filt_radius = floor((2*sigma_spatial_bilateral+1)/2);
-for c = 1:C
-    x(:,:,c) = bilateral(x(:,:,c), average_filt_radius, sigma_spatial_bilateral, sigma_intensity_bilateral);
-end
+% average_filt_radius = floor((2*sigma_spatial_bilateral+1)/2);
+% for c = 1:C
+%     x(:,:,c) = bilateral(x(:,:,c), average_filt_radius, sigma_spatial_bilateral, sigma_intensity_bilateral);
+% end
 
+% % Adaptive histogram equalization contrast enhancement
+% x = enhance_contrast(x, max_lum);
+
+%x(x < noise_thresh) = 0; % noise suppression to blackness of space
 
 gt = crop_artifact_portions(I_pad, pad_widths); % takes portion of original without artifacts
 

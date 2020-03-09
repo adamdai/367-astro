@@ -12,7 +12,8 @@ function [I_deconv] = RL_sparse(I, psf, lambda, max_iters)
     for c = 1:C
         x = I_deconv(:,:,c);
         At_1 = Atfun(ones(size(x)));
-        for i = 1:max_iters              
+        for i = 1:max_iters
+            disp(['Iteration ',num2str(i+(c-1)*max_iters),' of ',num2str(C*max_iters)]);
             y = I(:,:,c)./Afun(x);
             y(isnan(y)) = 0;
             z = Atfun(y);
