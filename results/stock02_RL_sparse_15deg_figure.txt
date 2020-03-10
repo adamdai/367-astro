@@ -1,0 +1,14 @@
+image = stock02.jpg
+crop = 1:2000 x 1:2000
+blur angle (deg) = 15
+rotation center = image center
+deconv method = RL
+prior = sparse
+deconv iters = 5
+lambda = 1
+rho = 10
+brightness scale = 3
+contrast scale = 2
+noise thresh = 0.2
+psnr = -9.7171
+execution time (s) = 123.1971

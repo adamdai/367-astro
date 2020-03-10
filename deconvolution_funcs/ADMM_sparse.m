@@ -16,7 +16,8 @@ function [I_deconv] = ADMM_sparse(I, psf, lambda, rho, iterations)
         denom = cTFT.*cFT + rho;
 
         for iters = 1:iterations
-            % x update
+            disp(['Iteration ',num2str(iters+(c-1)*iterations),' of ',num2str(C*iterations)]);
+            % x update       
             v = z - u;
             vFT = fft2(v);
             num = cTFT.*bFT + rho*vFT;

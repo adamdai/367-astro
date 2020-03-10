@@ -1,4 +1,4 @@
-function [I_deconv] = RL_sparse(I, psf, max_iters)
+function [I_deconv] = RL_sparse(I, psf, lambda, max_iters)
     eps = 1e-8;
     I(I<=0) = eps;
     [H,W,C] = size(I);
@@ -9,11 +9,11 @@ function [I_deconv] = RL_sparse(I, psf, max_iters)
     Atfun   = @(x) ifft2( fft2(x).*conj(otf), 'symmetric');
       
     I_deconv = rand(size(I));
-    lambda = 0.01;
     for c = 1:C
         x = I_deconv(:,:,c);
         At_1 = Atfun(ones(size(x)));
-        for i = 1:max_iters              
+        for i = 1:max_iters
+            disp(['Iteration ',num2str(i+(c-1)*max_iters),' of ',num2str(C*max_iters)]);
             y = I(:,:,c)./Afun(x);
             y(isnan(y)) = 0;
             z = Atfun(y);

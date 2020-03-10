@@ -10,7 +10,8 @@ function [x] = RL_color(I, psf, max_iters)
     
     x = rand(size(I));
     for c = 1:C
-        for i = 1:max_iters              
+        for i = 1:max_iters
+            disp(['Iteration ',num2str(i+(c-1)*max_iters),' of ',num2str(C*max_iters)]);
             y = I(:,:,c)./Afun(x(:,:,c));
             y(isnan(y)) = 0;
             z = Atfun(y);

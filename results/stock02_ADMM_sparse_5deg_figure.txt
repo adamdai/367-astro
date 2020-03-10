@@ -1,0 +1,14 @@
+image = stock02.jpg
+crop = 1:2000 x 1:2000
+blur angle (deg) = 5
+rotation center = image center
+deconv method = ADMM
+prior = sparse
+deconv iters = 5
+lambda = 1
+rho = 10
+brightness scale = 1.55
+contrast scale = 5
+noise thresh = 0.2
+psnr = 17.8921
+execution time (s) = 22.3907
