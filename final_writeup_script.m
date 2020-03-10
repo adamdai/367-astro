@@ -16,9 +16,9 @@ prior = 'sparse';
 deconv_iters = 5;
 lambda = 1;
 rho = 10;
-sigma_noise_wiener = 0.5;
-brightness_scale = 1.5;
-contrast_scale = 2.5;
+sigma_noise_wiener = 1.55;
+brightness_scale = 1.55;
+contrast_scale = 5;
 sigma_spatial_bilateral = 0.5;
 sigma_intensity_bilateral = 0.1;
 noise_thresh = 0.2;
@@ -30,6 +30,9 @@ max_lum = 100;
 [I_pad, pad_widths] = pad_farthest_corner(I, rot_center);
 [H_pad, W_pad, C_pad] = size(I_pad);
 b = rotate_blur_image(I_pad, blur_th);
+
+tic % start timer for algorithm
+
 b(b<noise_thresh) = 0;
 b_polar = map_to_polar(b);
 
@@ -64,9 +67,10 @@ end
 % Mapping back to cartesian space
 x = map_to_cartesian(x_polar, H_pad, W_pad);
 x = crop_artifact_portions(x, pad_widths);
-x = (normalize_01(x)*brightness_scale).^(contrast_scale);
+x_orig = x;
+x = (normalize_01(x_orig)*brightness_scale).^(contrast_scale);
 
-%x(x < noise_thresh) = 0;
+total_time = toc;
 
 % Bilateral filtering deconvolution artifacts
 % average_filt_radius = floor((2*sigma_spatial_bilateral+1)/2);
@@ -74,20 +78,39 @@ x = (normalize_01(x)*brightness_scale).^(contrast_scale);
 %     x(:,:,c) = bilateral(x(:,:,c), average_filt_radius, sigma_spatial_bilateral, sigma_intensity_bilateral);
 % end
 
-% % Adaptive histogram equalization contrast enhancement
-% x = enhance_contrast(x, max_lum);
-
-%x(x < noise_thresh) = 0; % noise suppression to blackness of space
-
 gt = crop_artifact_portions(I_pad, pad_widths); % takes portion of original without artifacts
 
+figure('position',[800,800,1500,500]);
 subplot(1,3,1)
 imshow(gt)
+% imwrite(gt, 'results/stock02_ground_truth.jpg');
 title('Ground truth')
 subplot(1,3,2)
 imshow(crop_artifact_portions(normalize_01(b), pad_widths))
-title('Simulated blurred image')
+imwrite(normalize_01(b), ['results/stock02_blurred_',num2str(blur_th),'deg.jpg']);
+title(['Simulated blurred image, \theta = ', num2str(blur_th),'^{o}'])
 subplot(1,3,3)
 imshow(x);
+imwrite(x, ['results/stock02_',deconv_method,'_',prior,'_',num2str(blur_th),'deg.jpg']);
 title(['Reconstructed image, PSNR = ', num2str(psnr(x, gt))])
+
+fileinfo = ['results/stock02_',deconv_method,'_',prior,'_',num2str(blur_th),'deg_figure'];
+saveas(gcf, [fileinfo,'.jpg']);
+metafileID = fopen([fileinfo,'.txt'], 'w');
+fprintf(metafileID, 'image = stock02.jpg\n');
+fprintf(metafileID, 'crop = 1:2000 x 1:2000\n');
+fprintf(metafileID, ['blur angle (deg) = ',num2str(blur_th),'\n']);
+fprintf(metafileID, ['rotation center = image center\n']);
+fprintf(metafileID, ['deconv method = ',deconv_method,'\n']);
+fprintf(metafileID, ['prior = ',prior,'\n']);
+fprintf(metafileID, ['deconv iters = ',num2str(deconv_iters),'\n']);
+fprintf(metafileID, ['lambda = ',num2str(lambda),'\n']);
+fprintf(metafileID, ['rho = ',num2str(rho),'\n']);
+fprintf(metafileID, ['brightness scale = ',num2str(brightness_scale),'\n']);
+fprintf(metafileID, ['contrast scale = ',num2str(contrast_scale),'\n']);
+fprintf(metafileID, ['noise thresh = ',num2str(noise_thresh),'\n']);
+fprintf(metafileID, ['psnr = ',num2str(psnr(x,gt)),'\n']);
+fprintf(metafileID, ['execution time (s) = ',num2str(total_time),'\n']);
+fclose(metafileID);
+
         
