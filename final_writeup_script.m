@@ -2,7 +2,7 @@ clear, close all
 addpath('./deconvolution_funcs');
 addpath('./utility');
 
-imgpath = './stock_photos/stock_02.jpg';
+imgpath = './stock_photos/stock_01.jpg';
 I = im2double(imread(imgpath));
 I = I(1:2000, 1:2000, :);
 [H, W, C] = size(I);
@@ -16,13 +16,9 @@ prior = 'sparse';
 deconv_iters = 5;
 lambda = 1;
 rho = 10;
-sigma_noise_wiener = 1.55;
-brightness_scale = 1.55;
-contrast_scale = 5;
-sigma_spatial_bilateral = 0.5;
-sigma_intensity_bilateral = 0.1;
+brightness_scale = 1.55; % 1.55 seems to work well for ADMM, 3 for RL
+contrast_scale = 5; % 5 seems to work well for ADMM, 2 for RL
 noise_thresh = 0.2;
-max_lum = 100;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -65,39 +61,32 @@ switch deconv_method
 end
 
 % Mapping back to cartesian space
-x = map_to_cartesian(x_polar, H_pad, W_pad);
-x = crop_artifact_portions(x, pad_widths);
-x_orig = x;
+x_orig = map_to_cartesian(x_polar, H_pad, W_pad);
+x_orig = crop_artifact_portions(x_orig, pad_widths);
 x = (normalize_01(x_orig)*brightness_scale).^(contrast_scale);
 
 total_time = toc;
-
-% Bilateral filtering deconvolution artifacts
-% average_filt_radius = floor((2*sigma_spatial_bilateral+1)/2);
-% for c = 1:C
-%     x(:,:,c) = bilateral(x(:,:,c), average_filt_radius, sigma_spatial_bilateral, sigma_intensity_bilateral);
-% end
 
 gt = crop_artifact_portions(I_pad, pad_widths); % takes portion of original without artifacts
 
 figure('position',[800,800,1500,500]);
 subplot(1,3,1)
 imshow(gt)
-% imwrite(gt, 'results/stock02_ground_truth.jpg');
+imwrite(gt, 'results/stock01_ground_truth.jpg');
 title('Ground truth')
 subplot(1,3,2)
 imshow(crop_artifact_portions(normalize_01(b), pad_widths))
-imwrite(normalize_01(b), ['results/stock02_blurred_',num2str(blur_th),'deg.jpg']);
+imwrite(normalize_01(b), ['results/stock01_blurred_',num2str(blur_th),'deg.jpg']);
 title(['Simulated blurred image, \theta = ', num2str(blur_th),'^{o}'])
 subplot(1,3,3)
 imshow(x);
-imwrite(x, ['results/stock02_',deconv_method,'_',prior,'_',num2str(blur_th),'deg.jpg']);
+imwrite(x, ['results/stock01_',deconv_method,'_',prior,'_',num2str(blur_th),'deg.jpg']);
 title(['Reconstructed image, PSNR = ', num2str(psnr(x, gt))])
 
-fileinfo = ['results/stock02_',deconv_method,'_',prior,'_',num2str(blur_th),'deg_figure'];
+fileinfo = ['results/stock01_',deconv_method,'_',prior,'_',num2str(blur_th),'deg_figure'];
 saveas(gcf, [fileinfo,'.jpg']);
 metafileID = fopen([fileinfo,'.txt'], 'w');
-fprintf(metafileID, 'image = stock02.jpg\n');
+fprintf(metafileID, 'image = stock01.jpg\n');
 fprintf(metafileID, 'crop = 1:2000 x 1:2000\n');
 fprintf(metafileID, ['blur angle (deg) = ',num2str(blur_th),'\n']);
 fprintf(metafileID, ['rotation center = image center\n']);
