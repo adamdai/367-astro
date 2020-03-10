@@ -1,31 +1,48 @@
 clear, close all
 addpath('./utility');
-img_path = 'stock_photos/star_trail_test.jpg';
+img_path = 'stock_photos/star_trail_3.jpg';
+%img_path = 'stock_photos/star_trails.jpeg';
+%img_path = 'stock_photos/star_trail_test.jpg';
 %img_path = 'stock_photos/star_trail2.jpg';
-%img_path = 'stock_photos/star_trail_3.jpg';
-I = rgb2gray(im2double(imread(img_path)));
-%I = im2double(imread(img_path));
+%I = rgb2gray(im2double(imread(img_path)));
+I = im2double(imread(img_path));
 %I = I(1:276, 150:415, :);% centered
-%I = I(1750:2500, 1500:2250, :);% centered
+%I = I(1700:3100, 1000:2600, :);% centered
+bw = imbinarize(rgb2gray(I));
 
-[H,W] = size(I);
+% test circle points
+% imageSizeX = 640;
+% imageSizeY = 480;
+% [cols,rows] = meshgrid(1:imageSizeX, 1:imageSizeY);
+% % Next create the circle in the image.
+% c = [320,240];
+% r = 100;
+% tol = 50;
+% circle = ((rows - c(2)).^2 + (cols - c(1)).^2 <= r.^2+tol) & ((rows - c(2)).^2 + (cols - c(1)).^2 >= r.^2-tol);
+% % circlePixels is a 2D "logical" array.
+% % Now, display it.
+% image(circle);
+% [rows, columns] = find(circle);
+% [xc,yc,R,a] = cvxcircfit(columns,rows);
+% imshow(circle);viscircles([xc,yc],R);
 
-[cols,rows] = meshgrid(1:W, 1:H);
-tol = 200;
-
-c = [100, 200];
-r = 50;
-circle = ((rows - c(2)).^2 + (cols - c(1)).^2 <= r.^2+tol) & ((rows - c(2)).^2 + (cols - c(1)).^2 >= r.^2-tol);
-
-
-%bw = im2bw(I,0.5);
-bw = imbinarize(I);
+tic
 [rows, columns] = find(bw);
-[xc,yc,R,a] = circfit(columns,rows);
-imshow(bw);viscircles([xc,yc],R);
+[xc,yc,R1,R2] = cvxcircfit(columns,rows);
+toc
+imshow(bw);viscircles([xc,yc;xc,yc],[R1;R2]);
 
-% [c,r] = imfindcircles(I,[100,4000]);
-% imshow(I);viscircles(c,r);
+% tic
+% [rows, columns] = find(bw);
+% [xc,yc,R,a] = circfit(columns,rows);
+% toc
+% imshow(bw);viscircles([xc,yc],R);
+
+% tic
+% bw_rescale = imresize(bw,1/10);
+% [c,r] = imfindcircles(bw_rescale,[10,max(size(bw_rescale))]);
+% toc
+% imshow(bw);viscircles(c(1,:),r(1));
 
 % figure();
 % imshow(I);

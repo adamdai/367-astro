@@ -26,6 +26,7 @@ function [I_deconv] = RL_TV(I, psf, lambda, max_iters)
             TV(isnan(TV))=0;
             x = (Atfun(d)./(At_1-TV)).*x;
             x(x<0)=0;
+            fprintf('channel %d, iteration %d\n',c,i);
         end
         I_deconv(:,:,c) = x;
     end

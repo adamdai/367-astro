@@ -1,0 +1,29 @@
+function [xc,yc,R1,R2] = cvxcircfit(x,y)
+%CIRCFIT  Fits a circle in x,y plane
+%
+% minimum right singular value 
+
+% x = rand(10,1);
+% y = rand(10,1);
+
+n=length(x);  xx=x.*x; yy=y.*y; xy=x.*y;
+A=[sum(x) sum(y) n;sum(xy) sum(yy) sum(y);sum(xx) sum(xy) sum(x)];
+B=[-sum(xx+yy) ; -sum(xx.*y+yy.*y) ; -sum(xx.*x+xy.*y)];
+AA = [A zeros(3,3);zeros(3,3) A];
+BB = [B;B];
+
+cvx_begin
+    variable c(2);
+    variable r1;
+    variable r2;
+    a = [c;r1;c;r2];
+    minimize(norm(AA*a-BB));
+%     minimize(norm(AA*a-BB)+inv_pos(square(r2-r1)));
+%     subject to
+%         r2 <= r1-50;
+cvx_end
+
+xc = -.5*c(1);
+yc = -.5*c(2);
+R1  =  sqrt((c(1)^2+c(2)^2)/4-r1);
+R2  =  sqrt((c(1)^2+c(2)^2)/4-r2);

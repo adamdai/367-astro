@@ -26,7 +26,7 @@ blur_len = floor(pix_th);
 psf = zeros(blur_len*2-1, blur_len*2-1);
 psf(1:blur_len,blur_len) = 1;
 
-fprintf('beginning deconvolution\n');
+fprintf('mapped to polar\n');
 
 max_iters = 20;   
 I_deconv_polar = RL_TV(I_blurred_polar, psf, 0.01, max_iters);
