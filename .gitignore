@@ -1,1 +1,4 @@
 *.m~
+neural_network_data*
+rotation_center_net_weights*
+checkpoint
