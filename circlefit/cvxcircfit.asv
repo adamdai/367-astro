@@ -18,9 +18,12 @@ cvx_begin
     variable r2;
     a = [c;r1;c;r2];
     minimize(norm(AA*a-BB));
+    minimize(sum(huber((AA*a-BB),1)));
 %     minimize(norm(AA*a-BB)+inv_pos(square(r2-r1)));
 %     subject to
-%         r2 <= r1-50;
+%          r2 - r1 >= 0.06;
+%          r1 >= 0;
+%          r2 >= 0;
 cvx_end
 
 xc = -.5*c(1);

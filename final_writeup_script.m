@@ -4,20 +4,20 @@ addpath('./utility');
 
 imgpath = './stock_photos/stock_01.jpg';
 I = im2double(imread(imgpath));
-I = I(1:2000, 1:2000, :);
+I = I(500:2500, 2000:4000, :);
 [H, W, C] = size(I);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%% PARAMETERS %%%%%%%%%%%%%%
 blur_th = 15;
 rot_center = [ceil(H/2),ceil(W/2)];
-deconv_method = 'ADMM';
-prior = 'sparse';
+deconv_method = 'RL';
+prior = 'none';
 deconv_iters = 5;
 lambda = 1;
 rho = 10;
-brightness_scale = 1.55; % 1.55 seems to work well for ADMM, 3 for RL
-contrast_scale = 5; % 5 seems to work well for ADMM, 2 for RL
+brightness_scale = 3; % 1.55 seems to work well for ADMM, 3 for RL
+contrast_scale = 2; % 5 seems to work well for ADMM, 2 for RL
 noise_thresh = 0.2;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -98,7 +98,9 @@ fprintf(metafileID, ['rho = ',num2str(rho),'\n']);
 fprintf(metafileID, ['brightness scale = ',num2str(brightness_scale),'\n']);
 fprintf(metafileID, ['contrast scale = ',num2str(contrast_scale),'\n']);
 fprintf(metafileID, ['noise thresh = ',num2str(noise_thresh),'\n']);
+fprintf(metafileID, ['mse = ',num2str(immse(x,gt)),'\n']);
 fprintf(metafileID, ['psnr = ',num2str(psnr(x,gt)),'\n']);
+fprintf(metafileID, ['ssim = ',num2str(ssim(x,gt)),'\n']);
 fprintf(metafileID, ['execution time (s) = ',num2str(total_time),'\n']);
 fclose(metafileID);
 
