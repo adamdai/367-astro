@@ -28,7 +28,7 @@ def read_train_data():
 def read_run_data(path):
     x = cv2.imread(path)
     orig_size = x.shape
-    print(orig_size)
+
     x = cv2.cvtColor(x, cv2.COLOR_RGB2GRAY)
     x = cv2.resize(x, (250,250))
     x = np.expand_dims(x, axis=2)
@@ -36,12 +36,7 @@ def read_run_data(path):
     x = x.astype('float32')
     x /= 255
     scale = [orig_size[0]/250, orig_size[1]/250]
-    print(scale)
-    # I = plt.imread(path)[:,:,1]
-    # I = np.expand_dims(I, axis=2)
-    # I = np.expand_dims(I, axis=0)
-    # I = I.astype('float32')
-    # I /= 255
+
     return x, scale
 
 def build_small_model():
@@ -158,37 +153,19 @@ def train_network():
 def run_network(path):
     model = build_model()
     model.load_weights('rotation_center_net_weights_largescale')
-    x_test, _ = read_train_data()
-    x_test = x_test.astype('float32')
-    x_test /= 255
-    predictions = model.predict(x_test)
-    plt.ion()
+    I = plt.imread(path)
+    x, scale = read_run_data(path)
+    prediction = model.predict(x)
     fig,ax = plt.subplots(1)
+    ax.imshow(I)
+    circ = Circle((prediction[0,0]*scale[0],prediction[0,1]*scale[1]), radius=100, fill=False, color='red')
+    ax.add_patch(circ)
+    print('Prediction: ', prediction[0,:]*scale)
     plt.show()
-    for i in range(predictions.shape[0]):
-        ax.imshow(np.squeeze(x_test[i]), cmap='gray')
-        circ = Circle((predictions[i,0],predictions[i,1]), radius=50, fill=False, color='red')
-        ax.add_patch(circ)
-        print('Prediction: ', predictions[i,:])
-        plt.draw()
-        input("Press [enter] to continue.")
-        circ.remove()
-    # I = plt.imread(path)
-    # x, scale = read_run_data(path)
-    # #scale = [1,1]
-    # model = build_model()
-    # model.load_weights('rotation_center_net_weights_constbrightness')
-    # prediction = model.predict(x)
-    # fig,ax = plt.subplots(1)
-    # ax.imshow(I)
-    # circ = Circle((prediction[0,0]*scale[0],prediction[0,1]*scale[1]), radius=100, fill=False, color='red')
-    # ax.add_patch(circ)
-    # print('Prediction: ', prediction[0,:]*scale)
-    # plt.show()
 
 
 if __name__ == '__main__':
-    run_network('')
+    run_network('test_circle_detect_images/real_blur3.jpg')
     # test_path = 'stock_photos/star_trail_test.jpg'
     # run_network(test_path)
     # train_network()
