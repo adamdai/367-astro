@@ -10,7 +10,12 @@ rho = 10
 brightness scale = 1.55
 contrast scale = 5
 noise thresh = 0.2
+<<<<<<< HEAD
 mse = 0.0096225
 psnr = 20.1671
 ssim = 0.19097
 execution time (s) = 59.4235
+=======
+psnr = 20.1671
+execution time (s) = 41.4292
+>>>>>>> a9d4d1c42675d7b59d6de2daf16108fba4a2b15f

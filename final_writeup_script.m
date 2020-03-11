@@ -2,7 +2,7 @@ clear, close all
 addpath('./deconvolution_funcs');
 addpath('./utility');
 
-imgpath = './stock_photos/stock_01.jpg';
+imgpath = './stock_photos/stock_02.jpg';
 I = im2double(imread(imgpath));
 I = I(500:2500, 2000:4000, :);
 [H, W, C] = size(I);
@@ -69,6 +69,7 @@ total_time = toc;
 
 gt = crop_artifact_portions(I_pad, pad_widths); % takes portion of original without artifacts
 
+
 figure('position',[800,800,1500,500]);
 subplot(1,3,1)
 imshow(gt)
@@ -103,5 +104,6 @@ fprintf(metafileID, ['psnr = ',num2str(psnr(x,gt)),'\n']);
 fprintf(metafileID, ['ssim = ',num2str(ssim(x,gt)),'\n']);
 fprintf(metafileID, ['execution time (s) = ',num2str(total_time),'\n']);
 fclose(metafileID);
+
 
         
