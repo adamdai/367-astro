@@ -1,7 +1,5 @@
 function [xc,yc,R,u] = algcircfit(x,y)
-%CIRCFIT  Fits a circle in x,y plane
-%
-% minimum right singular value 
+% Algebraic center
 
 n=length(x);  
 B = [x.^2+y.^2, x, y, ones(n,1)];

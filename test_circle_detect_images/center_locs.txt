@@ -20,3 +20,28 @@ Sim 3: 502, 618
 Real 1: 99, 208
 Real 2: 2054, 1781
 Real 3: 1690, 1806
+
+Hough
+
+Pure Sim 1: 103, 76
+Pure Sim 2: 126, 193
+Pure Sim 3: 163, 112
+Sim 1: 693, 278
+Sim 2: 1084, 1582
+Sim 3: 441, 630
+Real 1: 280, 131
+Real 2: 1658, 2255
+Real 3: none
+
+LS:
+
+Pure Sim 1: 127, 121
+Pure Sim 2: 122, 129
+Pure Sim 3: 132, 129
+Sim 1: 1029, 963
+Sim 2: 1043, 1069
+Sim 3: 579, 540
+Real 1: 248, 142
+Real 2: 1749, 2333
+Real 3: 2164, 1850
+

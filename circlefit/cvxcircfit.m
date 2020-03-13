@@ -1,10 +1,6 @@
 function [xc,yc,R1,R2] = cvxcircfit(x,y)
-%CIRCFIT  Fits a circle in x,y plane
-%
-% minimum right singular value 
-
-% x = rand(10,1);
-% y = rand(10,1);
+% Convex optimization methods of 
+% fitting a circle-based objective
 
 n=length(x);  xx=x.*x; yy=y.*y; xy=x.*y;
 A=[sum(x) sum(y) n;sum(xy) sum(yy) sum(y);sum(xx) sum(xy) sum(x)];

@@ -3,7 +3,7 @@ function [c,r] = houghfit(I)
 bw = imbinarize(rgb2gray(I));
 
 sz = size(I,1)*size(I,2);
-s = sqrt(sz/250000);
+s = max(1,sqrt(sz/250000));
 se = strel('line',1*s,10*s);
 bw_dil = imdilate(bw,se);
 
