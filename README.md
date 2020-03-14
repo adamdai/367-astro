@@ -26,7 +26,27 @@ This folder contains miscellaneous utlity functions, such as mapping polar to/fr
 ### testing
 This folder contains miscellaneous scripts used during testing.
 
+### pipeline_images
+This folder contains sample images from stages in the image processing pipeline.
+
+### results
+This folder contains various figures and plots of results generated.
+
+### stock_photos
+This folder contains stock photos obtained from the internet of star scenes and star trail images.
+
+### test_circle_detect_images
+This folder contains the images used to evaluate the circle detection methods (least-squares, hough transform, and CNN).
+
 ## Python
+### cnn
+This folder contains all the files for training and running the CNN
+
+### make_dataset.py
+This file creates a dataset of images with labels of rotation centers of simulated star trail data.
+
+### rotation_center_network.py
+This file trains a CNN with architecture in the build_model() function on the training data in the folder neural_network_data. This function can also be used to evaluate the trained network on a given image.
 
 
 #### Adam Dai

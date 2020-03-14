@@ -3,6 +3,7 @@ import numpy as np
 from scipy import ndimage
 
 def pad_furthest_corner(I, x, y):
+    # Pads the image such that the x,y center is in the center of the image, and that the image can be fully rotated
     H,W = I.shape
     diag_dist = int(np.ceil(np.sqrt(max(y,H-y)**2+max(x,W-x)**2)))
     top_pad = diag_dist - y
@@ -28,6 +29,7 @@ def rotate_blur_image(I, blur_th, x, y):
     return unpad_furthest_corner(I_rot, pad_widths)
 
 def normalize_01(I):
+    # Normalizes image pixels to the range 0-1
     return (I-np.min(I))/(np.max(I)-np.min(I))
 
 def make_dataset():
@@ -43,6 +45,7 @@ def make_dataset():
 
     with open('neural_network_data/labels.txt', 'w') as f:
         for i in range(n_images):
+            # Choose random values for sparsity threshold, (x,y) rotation center, and blur angle
             thresh = np.random.choice(thresh_vals)
             x = np.random.choice(x_coords)
             y = np.random.choice(y_coords)

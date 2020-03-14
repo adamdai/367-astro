@@ -30,15 +30,16 @@ def read_run_data(path):
     orig_size = x.shape
     x = cv2.resize(x, (250,250))
 
-    x = np.expand_dims(x, axis=2)
+    x = np.expand_dims(x, axis=2) # Putting single image in format of tensor
     x = np.expand_dims(x, axis=0)
     x = x.astype('float32')
     x /= 255
-    scale = [orig_size[0]/250, orig_size[1]/250]
+    scale = [orig_size[0]/250, orig_size[1]/250] # Used to scale up predicted center
 
     return x, scale
 
 def build_model2():
+    # Model with larger convolutional filters, tested on data, not used
     model = Sequential()
     model.add(Conv2D(64, kernel_size=(25, 25),
                  activation='relu',
@@ -58,6 +59,7 @@ def build_model2():
     return model
 
 def build_model():
+    # Original model tested on data
     model = Sequential()
     model.add(Conv2D(32, kernel_size=(5, 5),
                  activation='relu',
@@ -75,12 +77,6 @@ def build_model():
 
     model.summary()
 
-    model.compile(loss=keras.losses.mean_squared_error,
-              optimizer=keras.optimizers.Adam(),
-              metrics=[])
-
-    model.summary()
-
     return model
 
 
@@ -90,7 +86,7 @@ def train_network():
 
     x_train = x_train.astype('float32')
     x_test = x_test.astype('float32')
-    x_train /= 255
+    x_train /= 255 # normalize training data
     x_test /= 255
     y_train = y_train.astype('float32')
     y_test = y_test.astype('float32')
@@ -113,6 +109,7 @@ def train_network():
     print('Test loss:', score)
 
     predictions = model.predict(x_test)
+    # Plotting predicted center as red circle overlayed on image for test data
     plt.ion()
     fig,ax = plt.subplots(1)
     plt.show()
@@ -128,6 +125,7 @@ def train_network():
 
 
 def run_network(path):
+    # Evaluates the trained network on a given image
     model = build_model()
     model.load_weights('rotation_center_net_weights')
     I = plt.imread(path)
@@ -142,5 +140,5 @@ def run_network(path):
 
 
 if __name__ == '__main__':
-    train_network()
-    # run_network('test_circle_detect_images/sim_blur3.png')
+    train_network() # Used for training network
+    # run_network('test_circle_detect_images/sim_blur3.png') # Used to evaluate on single image

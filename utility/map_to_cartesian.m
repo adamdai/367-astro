@@ -1,4 +1,5 @@
 function [I_cart] = map_to_cartesian(I_polar, H, W)
+% Maps image in polar space back to cartesian space
     x_vals = linspace(-W/2, W/2, W);
     y_vals = linspace(-H/2, H/2, H);
     [X, Y] = meshgrid(x_vals, y_vals);

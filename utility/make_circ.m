@@ -1,4 +1,5 @@
 function [I] = make_circ(r, H, W)
+% Makes an image with a circle at center for testing
     I = zeros(H, W);
     o = [ceil(H/2), ceil(W/2)];
     for i = 1:H

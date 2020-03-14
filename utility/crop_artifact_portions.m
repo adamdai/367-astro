@@ -1,4 +1,7 @@
 function [x] = crop_artifact_portions(I, pad_widths)
+% Used to crop padded image of the portions with blurring artifacts, due to
+% padded regions being blurred into regions with data. Used for faithful
+% PSNR comparison.
     [H,W,C] = size(I);
     L = pad_widths(1);
     R = pad_widths(2);

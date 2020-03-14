@@ -4,15 +4,15 @@ addpath('./utility');
 
 imgpath = './stock_photos/stock_02.jpg';
 I = im2double(imread(imgpath));
-I = I(500:2500, 2000:4000, :);
+I = I(500:2500, 2000:4000, :); % A crop of the full image is used due to limits on compute time
 [H, W, C] = size(I);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%% PARAMETERS %%%%%%%%%%%%%%
 blur_th = 15;
 rot_center = [ceil(H/2),ceil(W/2)];
-deconv_method = 'RL';
-prior = 'none';
+deconv_method = 'ADMM';
+prior = 'sparse';
 deconv_iters = 5;
 lambda = 1;
 rho = 10;
@@ -23,13 +23,13 @@ noise_thresh = 0.2;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Generate rotationally blurred image
-[I_pad, pad_widths] = pad_farthest_corner(I, rot_center);
+[I_pad, pad_widths] = pad_farthest_corner(I, rot_center); % Pads image so that rotation center is in center of image, and image can be rotated fully
 [H_pad, W_pad, C_pad] = size(I_pad);
 b = rotate_blur_image(I_pad, blur_th);
 
 tic % start timer for algorithm
 
-b(b<noise_thresh) = 0;
+b(b<noise_thresh) = 0; % Thresholding noise to reduce artifacts
 b_polar = map_to_polar(b);
 
 % Generate blur PSF
@@ -62,7 +62,7 @@ end
 
 % Mapping back to cartesian space
 x_orig = map_to_cartesian(x_polar, H_pad, W_pad);
-x_orig = crop_artifact_portions(x_orig, pad_widths);
+x_orig = crop_artifact_portions(x_orig, pad_widths); % Used to remove portions with artifacts due to blur from padded region, for faithful PSNR comparison
 x = (normalize_01(x_orig)*brightness_scale).^(contrast_scale);
 
 total_time = toc;
