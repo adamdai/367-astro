@@ -101,31 +101,30 @@ def train_network():
     epochs = 50
     batch_size = 5
 
-    # model.fit(x_train, y_train,
-    #       batch_size=batch_size,
-    #       epochs=epochs,
-    #       verbose=1,
-    #       validation_data=(x_test, y_test))
+    model.fit(x_train, y_train,
+          batch_size=batch_size,
+          epochs=epochs,
+          verbose=1,
+          validation_data=(x_test, y_test))
 
-    # model.save_weights('rotation_center_net_weights_constbrightness')
-    model.load_weights('rotation_center_net_weights_largescale')
+    model.save_weights('rotation_center_net_weights')
 
     score = model.evaluate(x_test, y_test, verbose=0)
     print('Test loss:', score)
 
-    # predictions = model.predict(x_test)
-    # plt.ion()
-    # fig,ax = plt.subplots(1)
-    # plt.show()
-    # for i in range(predictions.shape[0]):
-    #     ax.imshow(np.squeeze(x_test[i]), cmap='gray')
-    #     circ = Circle((predictions[i,0],predictions[i,1]), radius=50, fill=False, color='red')
-    #     ax.add_patch(circ)
-    #     print('Prediction: ', predictions[i,:])
-    #     print('Actual: ', y_test[i,:])
-    #     plt.draw()
-    #     input("Press [enter] to continue.")
-    #     circ.remove()
+    predictions = model.predict(x_test)
+    plt.ion()
+    fig,ax = plt.subplots(1)
+    plt.show()
+    for i in range(predictions.shape[0]):
+        ax.imshow(np.squeeze(x_test[i]), cmap='gray')
+        circ = Circle((predictions[i,0],predictions[i,1]), radius=50, fill=False, color='red')
+        ax.add_patch(circ)
+        print('Prediction: ', predictions[i,:])
+        print('Actual: ', y_test[i,:])
+        plt.draw()
+        input("Press [enter] to continue.")
+        circ.remove()
 
 
 def run_network(path):
