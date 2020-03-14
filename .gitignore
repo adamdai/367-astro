@@ -1,4 +1,5 @@
 *.m~
-neural_network_data*
+*.asv
+neural_network_data_*
 rotation_center_net_weights*
 checkpoint

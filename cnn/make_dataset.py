@@ -39,9 +39,9 @@ def make_dataset():
     y_coords = range(50, 200)
     blur_th_vals = np.linspace(5, 15, 100)
 
-    n_images = 500
+    n_images = 100
 
-    with open('neural_network_data_const_brightness/labels.txt', 'w') as f:
+    with open('neural_network_data/labels.txt', 'w') as f:
         for i in range(n_images):
             thresh = np.random.choice(thresh_vals)
             x = np.random.choice(x_coords)
@@ -52,7 +52,7 @@ def make_dataset():
             I = I*(I > thresh)
             I_rot = rotate_blur_image(I, blur_th, x, y)
 
-            plt.imsave('neural_network_data_const_brightness/img%d.png' % i, I_rot, cmap='gray')
+            plt.imsave('neural_network_data/img%d.jpg' % i, I_rot, cmap='gray')
             f.write('%d,%d\n' % (x,y))
 
 if __name__ == '__main__':

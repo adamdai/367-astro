@@ -11,8 +11,8 @@ from tensorflow.keras import backend as K
 import cv2
 
 def read_train_data():
-    path = 'neural_network_data_inwindow_largescale/'
-    n_images = 1000
+    path = 'neural_network_data/'
+    n_images = 100
     x = []
     y = []
     with open(path+'labels.txt', 'r') as f:
@@ -86,7 +86,7 @@ def build_model():
 
 def train_network():
     x,y = read_train_data()
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.05, random_state=5)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=5)
 
     x_train = x_train.astype('float32')
     x_test = x_test.astype('float32')
@@ -129,7 +129,7 @@ def train_network():
 
 def run_network(path):
     model = build_model()
-    model.load_weights('rotation_center_net_weights_constbrightness')
+    model.load_weights('rotation_center_net_weights')
     I = plt.imread(path)
     x, scale = read_run_data(path)
     prediction = model.predict(x)
