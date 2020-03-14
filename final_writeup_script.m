@@ -16,8 +16,8 @@ prior = 'sparse';
 deconv_iters = 5;
 lambda = 1;
 rho = 10;
-brightness_scale = 3; % 1.55 seems to work well for ADMM, 3 for RL
-contrast_scale = 2; % 5 seems to work well for ADMM, 2 for RL
+brightness_scale = 1.55; % 1.55 seems to work well for ADMM, 3 for RL
+contrast_scale = 5; % 5 seems to work well for ADMM, 2 for RL
 noise_thresh = 0.2;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
