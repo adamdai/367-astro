@@ -2,6 +2,10 @@
 
 This repository contains files for computational astrophotography deblurring.
 
+## Paper
+
+See the written report at [Computation_Star_Tracking_Paper.pdf](Computation_Star_Tracking_Paper.pdf)
+
 ## MATLAB
 ### final_writeup_script.m
 This file executes the full deconvolution pipeline on an unblurred star image. It simulates a blurring effect around a given center location in the image, then maps the image to polar space and performs deconvolution with a linear blur kernel, then maps the image back to cartesian coordinates and applys brightness and contrast enhancement. The script has options for choosing the rotation center, deconvolution method, number of iterations, hyperparameters, regularization constants, and enhancement parameters.
